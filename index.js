@@ -55,21 +55,36 @@ function updateImage() {
 updateImage();
 
 // =============================================
-// STEP 6: Button click handler 
+// STEP 6: Button click handler
 // =============================================
 // Change image when button is clicked
-mainButton.addEventListener('click', () => {
-  // Go to next image
-  currentIndex++;
-  
-  // Update if not at the end
-  if (currentIndex < images.length) {
+if (mainButton) {
+  mainButton.addEventListener('click', () => {
+    // Guard: don't exceed bounds
+    if (currentIndex >= images.length - 1) return;
+
+    // Advance to next image index
+    currentIndex++;
+
+    // Update to the new image
     updateImage();
-  }
-  
-  // Once at the last image, show the final message and hide the button 
-  if (currentIndex === images.length - 1) {
-    mainButton.style.display = 'none';
-    finalMessage.style.display = 'block';
-  }
-});
+
+    // If we've reached the last image, fade out image and reveal the final message
+    if (currentIndex === images.length - 1) {
+      // Fade out the image
+      imageContent.style.opacity = 0;
+
+      // Hide the button
+      mainButton.style.display = 'none';
+
+      if (finalMessage) {
+        // Make it participate in layout then trigger staggered animation
+        finalMessage.style.display = 'block';
+        // small delay to allow browser to apply display before animation starts
+        requestAnimationFrame(() => {
+          finalMessage.style.opacity = '1';
+        });
+      }
+    }
+  });
+}
